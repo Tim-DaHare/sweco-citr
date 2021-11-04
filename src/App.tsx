@@ -3,20 +3,19 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import "./App.scss";
-
 import { BrowserAuthorizationClientConfiguration } from "@bentley/frontend-authorization-client";
 import {
-  FitViewTool,
-  IModelApp,
-  ScreenViewport,
-  StandardViewId,
+    FitViewTool,
+    IModelApp,
+    ScreenViewport,
+    StandardViewId
 } from "@bentley/imodeljs-frontend";
 import { Viewer } from "@itwin/web-viewer-react";
 import React, { useEffect, useState } from "react";
-
+import "./App.scss";
 import { Header } from "./Header";
 import { history } from "./history";
+import { RelaticsRequirementsUiProvider } from './UiProviders/RelaticsRequirementsProvider';
 
 const App: React.FC = () => {
   const [isAuthorized, setIsAuthorized] = useState(
@@ -152,11 +151,14 @@ const App: React.FC = () => {
         <span>"Logging in...."</span>
       ) : (
         <Viewer
-          contextId={contextId}
-          iModelId={iModelId}
-          authConfig={{ config: authConfig }}
-          onIModelAppInit={onIModelAppInit}
-          viewCreatorOptions={{ viewportConfigurer: viewConfiguration }}
+            contextId={contextId}
+            iModelId={iModelId}
+            authConfig={{ config: authConfig }}
+            onIModelAppInit={onIModelAppInit}
+            viewCreatorOptions={{ viewportConfigurer: viewConfiguration }}
+            uiProviders={[
+                new RelaticsRequirementsUiProvider(),
+            ]}
         />
       )}
     </div>

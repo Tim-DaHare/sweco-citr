@@ -5,3 +5,14 @@
 .viewer-container {
   height: calc(100vh - 50px);
 }
+
+.sweco-requirements-table {
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+  color: white;
+  td, th {
+    border: 1px solid black;
+    padding: 4px;
+  }
+}
