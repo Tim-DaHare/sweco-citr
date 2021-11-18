@@ -92,7 +92,7 @@ export function RelaticsTabWidget() {
                 status: status,
                 eis: eisTekst
               })
-              
+
               console.log(reqs)
             }
 
@@ -109,6 +109,7 @@ export function RelaticsTabWidget() {
         <thead>
             <tr>
                 <th>Object ID</th>
+                <th>Status</th>
                 <th>Eis</th>
             </tr>
         </thead>
@@ -117,6 +118,7 @@ export function RelaticsTabWidget() {
               return (
                 <tr key={requirement.id}>
                     <td>{requirement.id}</td>
+                    <td>{requirement.status}</td>
                     <td>{requirement.eis}</td>
                 </tr>
             )
