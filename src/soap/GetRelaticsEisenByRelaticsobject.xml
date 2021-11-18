@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rel="http://www.relatics.com/">
+
+  <soapenv:Header/>
+
+  <soapenv:Body>
+
+    <rel:GetResult>
+
+      <rel:Operation>GetRelaticsEisenByRelaticsobject</rel:Operation>
+
+      <rel:Identification>
+
+        <rel:Identification>
+
+          <rel:Workspace>1149f258-fbc3-4c6f-97ef-78f224eed877</rel:Workspace>
+
+        </rel:Identification>
+
+      </rel:Identification>
+
+      <rel:Parameters>
+
+        <rel:Parameters>
+
+          <rel:Parameter Name="RelaticsobjectID" Value="Obj-00001"/>
+
+        </rel:Parameters>
+
+      </rel:Parameters>
+
+      <rel:Authentication>
+
+        <rel:Authentication>
+
+          <rel:Entrycode>Welkom123</rel:Entrycode>
+
+        </rel:Authentication>
+
+      </rel:Authentication>
+
+    </rel:GetResult>
+
+  </soapenv:Body>
+
+</soapenv:Envelope>
