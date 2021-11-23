@@ -7,7 +7,7 @@
 
     <rel:GetResult>
 
-      <rel:Operation>GetRelaticsEisenByRelaticsobject</rel:Operation>
+      <rel:Operation>GetRelaticsEisenByNLCSobject</rel:Operation>
 
       <rel:Identification>
 
@@ -23,7 +23,7 @@
 
         <rel:Parameters>
 
-          <rel:Parameter Name="RelaticsobjectID" Value="Obj-00001"/>
+          <rel:Parameter Name="NLCSObject" Value="427400c4-cfc1-4675-beec-bac5b55e0564"/>
 
         </rel:Parameters>
 
