@@ -1,4 +1,4 @@
-import { Eis } from "./interfaces/requirement"
+import { Eis } from "./interfaces/Eis"
 
 const getXmlString = (
     operationName: string,
@@ -41,13 +41,13 @@ const getXmlString = (
     return xml
 }
 
-export const getRelaticsEisenByRelaticsobject = async () => {
+export const getRelaticsEisenByRelaticsobject = async (objectId: string) => {
     try {
         const xml = getXmlString(
             'GetRelaticsEisenByRelaticsobject',
             '1149f258-fbc3-4c6f-97ef-78f224eed877',
             [
-                {'RelaticsobjectID': 'Obj-00001'}
+                {'RelaticsobjectID': objectId}
             ],
             'Welkom123'
         )

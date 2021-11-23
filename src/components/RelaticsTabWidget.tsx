@@ -1,7 +1,7 @@
 // import { IModelApp, StandardViewId } from "@bentley/imodeljs-frontend";
 import * as React from "react";
 import { getRelaticsEisenByRelaticsobject } from "../api-helper";
-import { Eis } from "../interfaces/requirement";
+import { Eis } from "../interfaces/Eis";
 
 export function RelaticsTabWidget() {
   const [requirements, setRequirements] = React.useState<Eis[]>([]);
@@ -9,7 +9,7 @@ export function RelaticsTabWidget() {
   React.useEffect(() => {
     (async () => {
       try {
-        const reqs = await getRelaticsEisenByRelaticsobject()
+        const reqs = await getRelaticsEisenByRelaticsobject('Obj-00001')
         setRequirements(reqs)
       } catch(e) {
         // TODO: Waarschuwing popup laten zien
