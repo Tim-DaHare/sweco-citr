@@ -42,51 +42,47 @@ const getXmlString = (
 }
 
 export const getRelaticsEisenByRelaticsobject = async (objectId: string) => {
-    try {
-        const xml = getXmlString(
-            'GetRelaticsEisenByRelaticsobject',
-            '1149f258-fbc3-4c6f-97ef-78f224eed877',
-            [
-                {'RelaticsobjectID': objectId}
-            ],
-            'Welkom123'
-        )
+    const xml = getXmlString(
+        'GetRelaticsEisenByRelaticsobject',
+        '1149f258-fbc3-4c6f-97ef-78f224eed877',
+        [
+            {'RelaticsobjectID': objectId}
+        ],
+        'Welkom123'
+    )
 
-        const response = await fetch("https://sweco.relaticsonline.com/DataExchange.asmx?wsdl", {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'text/xml',
-            },
-            body: xml,
-        })
+    const response = await fetch("https://sweco.relaticsonline.com/DataExchange.asmx?wsdl", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'text/xml',
+        },
+        body: xml,
+    })
 
-        const responseXml = await response.text()
+    const responseXml = await response.text()
 
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(responseXml, 'text/xml')
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(responseXml, 'text/xml')
 
-        const eisRootElement = xmlDoc.getElementsByTagName("GetRelaticsEisenByRelaticsobject")[0].childNodes[0]
+    const eisRootElement = xmlDoc.getElementsByTagName("GetRelaticsEisenByRelaticsobject")[0].childNodes[0]
 
-        const reqs: Eis[] = []
+    const reqs: Eis[] = []
 
-        for (const i in eisRootElement.childNodes) {
-          const eis = eisRootElement.childNodes[i]
+    for (const i in eisRootElement.childNodes) {
+        const eis = eisRootElement.childNodes[i]
 
-          if (typeof eis !== 'object') continue
+        if (typeof eis !== 'object') continue
 
-          const id = (eis.childNodes[0] as Element).getAttribute('ID')
-          const status = (eis.childNodes[1] as Element).getAttribute('Status')
-          const eisTekst = (eis.childNodes[2].childNodes[0] as Element).getAttribute('Eistekst')
+        const id = (eis.childNodes[0] as Element).getAttribute('ID')
+        const status = (eis.childNodes[1] as Element).getAttribute('Status')
+        const eisTekst = (eis.childNodes[2].childNodes[0] as Element).getAttribute('Eistekst')
 
-          reqs.push({
+        reqs.push({
             id: id,
             status: status,
             eis: eisTekst
-          })
-        }
-
-        return reqs
-    } catch(e) {
-        throw e
+        })
     }
+
+    return reqs
 }
