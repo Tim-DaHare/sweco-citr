@@ -1,4 +1,4 @@
-import { Eis } from "./interfaces/Eis"
+import { Requirement } from "./interfaces/Requirement"
 
 const getXmlString = (
     operationName: string,
@@ -66,7 +66,7 @@ export const getRelaticsEisenByRelaticsobject = async (objectId: string) => {
 
     const eisRootElement = xmlDoc.getElementsByTagName("GetRelaticsEisenByRelaticsobject")[0].childNodes[0]
 
-    const reqs: Eis[] = []
+    const reqs: Requirement[] = []
 
     for (const i in eisRootElement.childNodes) {
         const eis = eisRootElement.childNodes[i]
@@ -80,9 +80,53 @@ export const getRelaticsEisenByRelaticsobject = async (objectId: string) => {
         reqs.push({
             id: id,
             status: status,
-            eis: eisTekst
+            description: eisTekst
         })
     }
 
     return reqs
+}
+
+export const getRelaticsEisenByNLCSobject = async (nclsObjectId: string) => {
+    const xml = getXmlString(
+        'GetRelaticsEisenByNLCSobject',
+        '1149f258-fbc3-4c6f-97ef-78f224eed877',
+        [
+            {'NCLSObject': nclsObjectId}
+        ],
+        'Welkom123'
+    )
+
+    const response = await fetch("https://sweco.relaticsonline.com/DataExchange.asmx?wsdl", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'text/xml',
+        },
+        body: xml,
+    })
+
+    const responseXml = await response.text()
+
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(responseXml, 'text/xml')
+
+    const requirementsRootElement =  xmlDoc.getElementsByTagName("GetRelaticsEisenByNLCSobject")[0] as Element
+
+    console.log(requirementsRootElement)
+
+    // const requirements: Eis[] = []
+    // requirementsRootElement.childNodes.forEach((catChild) => {
+    //     catChild.childNodes.forEach((reqChild) => {
+    //         const reqChildEl = reqChild as Element
+
+    //         // if (reqChildEl.nodeName !==)
+
+    //         console.log(reqChild.nodeName)
+    //         // const eis: Eis = {
+            
+    //         // }
+
+    //     })        
+    // })
+
 }

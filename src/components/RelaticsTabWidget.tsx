@@ -1,19 +1,20 @@
 // import { IModelApp, StandardViewId } from "@bentley/imodeljs-frontend";
 import * as React from "react";
-import { getRelaticsEisenByRelaticsobject } from "../api-helper";
-import { Eis } from "../interfaces/Eis";
+import { getRelaticsEisenByNLCSobject, getRelaticsEisenByRelaticsobject } from "../api-helper";
+import { Requirement } from "../interfaces/Requirement";
 
-export function RelaticsTabWidget() {
-  const [requirements, setRequirements] = React.useState<Eis[]>([]);
+export const RelaticsTabWidget = () => {
+  const [requirements, setRequirements] = React.useState<Requirement[]>([]);
 
   React.useEffect(() => {
     (async () => {
       try {
-        const reqs = await getRelaticsEisenByRelaticsobject('Obj-00001')
-        setRequirements(reqs)
+        const reqs = await getRelaticsEisenByNLCSobject("427400c4-cfc1-4675-beec-bac5b55e0564")
+
+        // const reqs = await getRelaticsEisenByRelaticsobject('Obj-00001')
+        // setRequirements(reqs)
       } catch(e) {
-        // TODO: Waarschuwing popup laten zien
-        console.warn('getRelaticsEisenByRelaticsobject failed to fetch requirements', e)
+        alert("Relatics eisen konden niet worden opgehaald");
       }
     })();
   }, [])
@@ -33,7 +34,7 @@ export function RelaticsTabWidget() {
               <tr key={requirement.id}>
                   <td>{requirement.id}</td>
                   <td>{requirement.status}</td>
-                  <td>{requirement.eis}</td>
+                  <td>{requirement.description}</td>
               </tr>
             )
           })}
