@@ -23,7 +23,7 @@ export const RelaticsTabWidget = () => {
       try {
         const reqs = await getRelaticsEisenByNLCSobject("427400c4-cfc1-4675-beec-bac5b55e0564")
 
-        console.log(reqs)
+        // console.log(reqs)
         // const reqs = await getRelaticsEisenByRelaticsobject('Obj-00001')
         setRequirements(reqs)
       } catch(e) {
@@ -36,15 +36,18 @@ export const RelaticsTabWidget = () => {
     <table className="sweco-requirements-table">
         <thead>
             <tr>
+              <th>Type</th>
               <th>Object ID</th>
               <th>Status</th>
               <th>Eis</th>
             </tr>
         </thead>
         <tbody>
-          {[...requirements].map(([_, reqs]) => [...reqs].map((req) => {
+          {[...requirements].map(([layername, reqs]) => [...reqs].map((req, i) => {
+            // FIXME: Use proper id for the row element key
             return (
-              <tr key={req.id}>
+              <tr key={`${layername}-${req.id}-${req.type}-${i}`}>
+                <td>{req.type}</td>
                 <td>{req.id}</td>
                 <td>{req.status}</td>
                 <td>{req.description}</td>

@@ -77,11 +77,11 @@ export const getRelaticsEisenByRelaticsobject = async (objectId: string) => {
         const status = (eis.childNodes[1] as Element).getAttribute('Status')
         const eisTekst = (eis.childNodes[2].childNodes[0] as Element).getAttribute('Eistekst')
 
-        reqs.push({
-            id: id,
-            status: status,
-            description: eisTekst
-        })
+        // reqs.push({
+        //     id: id,
+        //     status: status,
+        //     description: eisTekst
+        // })
     }
 
     return reqs
@@ -123,6 +123,7 @@ export const getRelaticsEisenByNLCSobject = async (nclsObjectId: string) => {
             fysiekObjectType.childNodes.forEach((obj) => {
                 obj.childNodes.forEach((eisObject) => {
                     
+                    const type = (eisObject as Element).nodeName
                     const id = (eisObject as Element).getElementsByTagName('ID')[0].getAttribute('ID')
                     const status = (eisObject as Element).getElementsByTagName('Status')[0].getAttribute('Status')
                     const description = (eisObject as Element).getElementsByTagName('Eistekst')[0].getAttribute('Eistekst')
@@ -130,7 +131,8 @@ export const getRelaticsEisenByNLCSobject = async (nclsObjectId: string) => {
                     const requirement: Requirement = {
                         id,
                         status, 
-                        description
+                        description,
+                        type
                     }
 
                     requirements.push(requirement)
