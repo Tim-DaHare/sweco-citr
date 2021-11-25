@@ -13,7 +13,6 @@ import {
 import { Viewer } from "@itwin/web-viewer-react";
 import React, { useEffect, useState } from "react";
 import "./App.scss";
-import { Citr } from "./classes/citr";
 import { Header } from "./Header";
 import { history } from "./history";
 import { RelaticsRequirementsUiProvider } from './UiProviders/RelaticsRequirementsProvider';
@@ -140,9 +139,6 @@ const App: React.FC = () => {
       IModelApp.tools.run(FitViewTool.toolId, viewPort, true, false);
       viewPort.view.setStandardRotation(StandardViewId.Iso);
     });
-
-    const citr = new Citr()
-    citr.initialize(viewPort)
   };
 
   return (

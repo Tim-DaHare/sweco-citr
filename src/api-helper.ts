@@ -110,23 +110,35 @@ export const getRelaticsEisenByNLCSobject = async (nclsObjectId: string) => {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(responseXml, 'text/xml')
 
-    const requirementsRootElement =  xmlDoc.getElementsByTagName("GetRelaticsEisenByNLCSobject")[0] as Element
+    const requirementsRootElement = xmlDoc.getElementsByTagName("GetRelaticsEisenByNLCSobject")[0] as Element
 
-    console.log(requirementsRootElement)
+    const requirementLayers: Map<string, Requirement[]> = new Map<string, Requirement[]>()
+    requirementsRootElement.childNodes.forEach((nlcsObj) => {
+        const nlcsChildEl = nlcsObj as Element
 
-    // const requirements: Eis[] = []
-    // requirementsRootElement.childNodes.forEach((catChild) => {
-    //     catChild.childNodes.forEach((reqChild) => {
-    //         const reqChildEl = reqChild as Element
+        const layerName = nlcsChildEl.getAttribute('NLCS_Object')!
 
-    //         // if (reqChildEl.nodeName !==)
+        const requirements: Requirement[] = [] 
+        nlcsObj.childNodes.forEach((fysiekObjectType) => {
+            fysiekObjectType.childNodes.forEach((obj) => {
+                obj.childNodes.forEach((eisObject) => {
+                    
+                    const id = (eisObject as Element).getElementsByTagName('ID')[0].getAttribute('ID')
+                    const status = (eisObject as Element).getElementsByTagName('Status')[0].getAttribute('Status')
+                    const description = (eisObject as Element).getElementsByTagName('Eistekst')[0].getAttribute('Eistekst')
+                    
+                    const requirement: Requirement = {
+                        id,
+                        status, 
+                        description
+                    }
 
-    //         console.log(reqChild.nodeName)
-    //         // const eis: Eis = {
-            
-    //         // }
+                    requirements.push(requirement)
+                })
+            })
+        })
+        requirementLayers.set(layerName, requirements)
+    })
 
-    //     })        
-    // })
-
+    return requirementLayers
 }

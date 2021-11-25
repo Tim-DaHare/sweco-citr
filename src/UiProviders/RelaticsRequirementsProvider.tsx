@@ -6,6 +6,8 @@ import {
     UiItemsProvider,
 } from '@bentley/ui-abstract';
 import { RelaticsTabWidget } from '../components/RelaticsTabWidget';
+import { IModelApp, ScreenViewport } from '@bentley/imodeljs-frontend';
+import { UiFramework } from '@bentley/ui-framework';
 
 export class RelaticsRequirementsUiProvider implements UiItemsProvider {
     public readonly id = "RelaticsRequirementsProviderId";
@@ -26,7 +28,9 @@ export class RelaticsRequirementsUiProvider implements UiItemsProvider {
                 id: 'relaticsWidget',
                 label: 'Relatics',
                 getWidgetContent() {
-                    return <RelaticsTabWidget/> 
+                    return (
+                        <RelaticsTabWidget /> 
+                    )
                 },
             };
 
