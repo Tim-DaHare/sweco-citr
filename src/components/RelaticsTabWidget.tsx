@@ -63,19 +63,34 @@ export const RelaticsTabWidget = () => {
 
   return (
     <div>
+      <div className="relatics-settings__container">
+        <h3>Relatics instellingen</h3>
+        <div>
+          <input placeholder="Workspace GUID" />
+        </div>
+        <div>
+          <input placeholder="Toegangscode" />
+        </div>
+        <div>
+          <input placeholder="Relatics object code" />
+        </div>
+
+        <button type="submit">Opslaan</button>
+      </div>
+
       <div className="category-filter">
         <span>Filter type eisen: </span>
         <div>
-          <input id="Klanteis" type="checkbox" name="scales" value="Klanteis" defaultChecked onChange={onReqfilterChange} />
-          <label htmlFor="scales">Klanteis</label>
+          <input id="Klanteis" type="checkbox" name="type" value="Klanteis" defaultChecked onChange={onReqfilterChange} />
+          <label htmlFor="Klanteis">Klanteis</label>
         </div>
         <div>
-          <input id="Klanteis" type="checkbox" name="scales" value="Contracteis_product" defaultChecked onChange={onReqfilterChange}  />
-          <label htmlFor="scales">Contracteis</label>
+          <input id="Contracteis_product" type="checkbox" name="type" value="Contracteis_product" defaultChecked onChange={onReqfilterChange}  />
+          <label htmlFor="Contracteis_product">Contracteis</label>
         </div>
         <div>
-          <input id="Klanteis" type="checkbox" name="scales" value="Systeemeis" defaultChecked onChange={onReqfilterChange} />
-          <label htmlFor="scales">Systeemeis</label>
+          <input id="Systeemeis" type="checkbox" name="type" value="Systeemeis" defaultChecked onChange={onReqfilterChange} />
+          <label htmlFor="Systeemeis">Systeemeis</label>
         </div>
       </div>
 

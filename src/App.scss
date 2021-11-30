@@ -6,12 +6,39 @@
   height: calc(100vh - 50px);
 }
 
+.relatics-settings__container {
+  padding: 8px;
+  color: white;
+  > div {
+    margin-bottom: 10px;
+    
+  }
+
+  > button {
+    width: 100%;
+  }
+
+  input, button {
+    padding: 4px 8px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  button {
+    background-color: #0061FF;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: 800;
+  }
+}
+
 .category-filter {
   padding: 8px;
   color: white;
   display: flex;
   flex-flow: row nowrap;
-  
+
   > span {
     margin-right: 30px;
   }
