@@ -13,13 +13,10 @@ export const RelaticsTabWidget = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
 
   const onSelectCallback = useCallback(async (ev: SelectionSetEvent) => {
-    // console.log(ev)
     const categories = await Citr.getLayerFromSelectionSet(ev.set)
 
     setSelectedCategories(categories)
-
-    // console.log(categories)
-  }, [requirements])
+  }, [])
 
   React.useEffect(() => {
     const vp = IModelApp.viewManager.getFirstOpenView()
@@ -30,14 +27,14 @@ export const RelaticsTabWidget = () => {
       try {
         const reqs = await getRelaticsEisenByNLCSobject("427400c4-cfc1-4675-beec-bac5b55e0564")
         // const reqs = await getRelaticsEisenByRelaticsobject('Obj-00001')
-        
+
         // console.log(reqs)
         setRequirements(reqs)
       } catch(e) {
         alert("Relatics eisen konden niet worden opgehaald");
       }
     })();
-  }, [])
+  }, [onSelectCallback])
 
   return (
     <table className="sweco-requirements-table">
@@ -53,7 +50,7 @@ export const RelaticsTabWidget = () => {
         <tbody>
           {[...requirements].map(([layername, reqs]) => {
 
-            if (selectedCategories.length > 0 && !selectedCategories.includes(layername)) return
+            if (selectedCategories.length > 0 && !selectedCategories.includes(layername)) return React.Fragment
 
             return (
               <React.Fragment key={`${layername}`}>
