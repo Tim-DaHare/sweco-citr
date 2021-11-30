@@ -6,6 +6,7 @@ import {
 } from "../api-helper";
 import { Requirement } from "../interfaces/Requirement";
 import { Citr } from "../Citr";
+import { RefreshIcon } from "./icons";
 
 export const RelaticsTabWidget = () => {
   const [requirements, setRequirements] = React.useState<Map<string, Requirement[]>>(new Map<string, Requirement[]>());
@@ -75,7 +76,12 @@ export const RelaticsTabWidget = () => {
           <input placeholder="Relatics object code" />
         </div>
 
-        <button type="submit">Opslaan</button>
+        <div className="button-area">
+          <button type="submit">Opslaan</button>
+          <button>
+            <RefreshIcon fill="white" />
+          </button>
+        </div>
       </div>
 
       <div className="category-filter">

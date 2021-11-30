@@ -22,14 +22,35 @@
     padding: 4px 8px;
     width: 100%;
     box-sizing: border-box;
+    border: none;
+    outline: none;
   }
 
-  button {
-    background-color: #0061FF;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-weight: 800;
+  .button-area {
+    display: flex;
+    flex-flow: row nowrap;
+    height: 50px;
+
+    button {
+      background-color: #0061FF;
+      color: white;
+      cursor: pointer;
+      font-weight: 800;
+      border-radius: 5px;
+    }
+
+    :first-child {
+      flex: 1;
+      margin-right: 5px;
+    }
+
+    :nth-child(2) {
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: center;
+      align-items: center;
+      width: 50px;
+    }
   }
 }
 
