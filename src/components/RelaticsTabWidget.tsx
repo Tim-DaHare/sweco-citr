@@ -1,4 +1,3 @@
-// import { IModelApp, StandardViewId } from "@bentley/imodeljs-frontend";
 import React, { useCallback, useState } from "react";
 import { IModelApp, SelectionSetEvent } from '@bentley/imodeljs-frontend';
 import { 
@@ -11,12 +10,30 @@ import { Citr } from "../Citr";
 export const RelaticsTabWidget = () => {
   const [requirements, setRequirements] = React.useState<Map<string, Requirement[]>>(new Map<string, Requirement[]>());
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+  const [selectedTypes, setselectedTypes] = useState<string[]>([
+    'Klanteis', 
+    'Contracteis_product', 
+    'Systeemeis'
+  ])
 
   const onSelectCallback = useCallback(async (ev: SelectionSetEvent) => {
     const categories = await Citr.getLayerFromSelectionSet(ev.set)
 
     setSelectedCategories(categories)
   }, [])
+
+  const onReqfilterChange = useCallback((e) => {
+    const currTypes = [...selectedTypes]
+    const i = currTypes.findIndex((t) => t === e.target.value)
+
+    if (i === -1) {
+      currTypes.push(e.target.value)
+    } else {
+      currTypes.splice(i, 1)
+    }
+
+    setselectedTypes(currTypes)
+  }, [selectedTypes])
 
   React.useEffect(() => {
     const vp = IModelApp.viewManager.getFirstOpenView()
@@ -36,8 +53,33 @@ export const RelaticsTabWidget = () => {
     })();
   }, [onSelectCallback])
 
+  const filteredReqs = [...requirements].filter(([layerName, reqs]) => {
+    if (selectedCategories.length !== 0 && !selectedCategories.includes(layerName)) return false
+
+    const filteredReqs = reqs.filter((req) => selectedTypes.includes(req.type))
+
+    return !!filteredReqs.length
+  })
+
   return (
-    <table className="sweco-requirements-table">
+    <div>
+      <div className="category-filter">
+        <span>Filter type eisen: </span>
+        <div>
+          <input id="Klanteis" type="checkbox" name="scales" value="Klanteis" defaultChecked onChange={onReqfilterChange} />
+          <label htmlFor="scales">Klanteis</label>
+        </div>
+        <div>
+          <input id="Klanteis" type="checkbox" name="scales" value="Contracteis_product" defaultChecked onChange={onReqfilterChange}  />
+          <label htmlFor="scales">Contracteis</label>
+        </div>
+        <div>
+          <input id="Klanteis" type="checkbox" name="scales" value="Systeemeis" defaultChecked onChange={onReqfilterChange} />
+          <label htmlFor="scales">Systeemeis</label>
+        </div>
+      </div>
+
+      <table className="sweco-requirements-table">
         <thead>
             <tr>
               <th>Type</th>
@@ -48,30 +90,38 @@ export const RelaticsTabWidget = () => {
             </tr>
         </thead>
         <tbody>
-          {[...requirements].map(([layername, reqs]) => {
+          {filteredReqs.length > 0 ? (
+            filteredReqs.map(([layername, reqs]) => {
+              return (
+                <React.Fragment key={`${layername}`}>
+                  <tr>
+                    <td className="layer-indicator" colSpan={5}>{layername}</td>
+                  </tr>
+                  {reqs.map((req, i) => {
+                    // FIXME: Find a real key value for the table row
 
-            if (selectedCategories.length > 0 && !selectedCategories.includes(layername)) return React.Fragment
+                    if (!selectedTypes.includes(req.type)) return React.Fragment
 
-            return (
-              <React.Fragment key={`${layername}`}>
-                <tr>
-                  <td className="layer-indicator" colSpan={5}>{layername}</td>
-                </tr>
-                {[...reqs].map((req, i) => {
                     return (
-                      <tr key={`${layername}-${req.id}-${req.type}-${i}`}>
+                      <tr key={`${layername}-${req.title}-${req.object_id}-${i}`}>
                         <td>{req.type}</td>
                         <td>{req.title}</td>
                         <td>{req.description}</td>
-                        <td>{req.id}</td>
+                        <td>{req.object_id}</td>
                         <td>{req.status}</td>
                       </tr>
                     )
                   })}
-              </React.Fragment>
-            )
-          })}
+                </React.Fragment>
+              )
+            })
+          ) : (
+            <tr>
+              <td colSpan={5}>Er zijn bestaan geen eisen voor de huidige filters en selecties</td>
+            </tr>
+          )}
         </tbody>
-    </table>
+      </table>
+    </div>
   )
 }

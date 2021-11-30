@@ -123,14 +123,16 @@ export const getRelaticsEisenByNLCSobject = async (nclsObjectId: string) => {
             fysiekObjectType.childNodes.forEach((obj) => {
                 obj.childNodes.forEach((eisObject) => {
                     
+                    const id = (eisObject as Element).getAttribute('ID')
                     const type = (eisObject as Element).nodeName
                     const title = (eisObject as Element).getAttribute(type)
-                    const id = (eisObject as Element).getElementsByTagName('ID')[0].getAttribute('ID')
+                    const object_id = (eisObject as Element).getElementsByTagName('ID')[0].getAttribute('ID')
                     const status = (eisObject as Element).getElementsByTagName('Status')[0].getAttribute('Status')
                     const description = (eisObject as Element).getElementsByTagName('Eistekst')[0].getAttribute('Eistekst')
                     
                     const requirement: Requirement = {
                         id,
+                        object_id,
                         title,
                         status, 
                         description,
