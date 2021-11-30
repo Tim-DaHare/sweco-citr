@@ -37,6 +37,7 @@ export const RelaticsTabWidget = () => {
         <thead>
             <tr>
               <th>Type</th>
+              <th>Titel</th>
               <th>Object ID</th>
               <th>Status</th>
               <th>Eis</th>
@@ -48,6 +49,7 @@ export const RelaticsTabWidget = () => {
             return (
               <tr key={`${layername}-${req.id}-${req.type}-${i}`}>
                 <td>{req.type}</td>
+                <td>{req.title}</td>
                 <td>{req.id}</td>
                 <td>{req.status}</td>
                 <td>{req.description}</td>
