@@ -54,7 +54,7 @@ export const RelaticsConfigForm: React.FC<RelaticsConfigFormProps> = ({
         <form className="relatics-settings__container" onSubmit={onFormSubmit}>
             <div className="flex">
                 <h3>Relatics instellingen</h3>
-                <a href="https://sweco.relaticsonline.com/" target="_blank"><img src="/RelaticsActive.png"></img></a>
+                <a title="Open relatics omgeving" href="https://sweco.relaticsonline.com/" target="_blank"><img src="/RelaticsActive.png"></img></a>
             </div>
             <div>
                 <input required name="workspaceId" placeholder="Workspace GUID" defaultValue={config?.workspaceId} />
