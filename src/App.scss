@@ -38,6 +38,33 @@
     width: 100%;
   }
 
+  a {
+    padding: 14px;
+    color: white;
+    text-decoration: none;
+    outline: none;
+  }
+
+  a:visited {
+    text-decoration: none;
+    color: white;
+  }
+
+  a:focus {
+    color: whitesmoke;
+  }
+
+  .flex {
+    display: flex;
+    column-gap: 60%;
+  }
+
+  img{
+    border: 0;
+    width: 30px;
+    height: 30px;
+  }
+
   input, button {
     padding: 4px 8px;
     width: 100%;
