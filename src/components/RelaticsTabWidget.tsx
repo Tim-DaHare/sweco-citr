@@ -7,6 +7,7 @@ import {
 import { Requirement } from "../interfaces/Requirement";
 import { Citr } from "../Citr";
 import { RefreshIcon } from "./icons";
+import { RelaticsConfigForm } from "./RelaticsConfigForm";
 
 export const RelaticsTabWidget = () => {
   const [requirements, setRequirements] = React.useState<Map<string, Requirement[]>>(new Map<string, Requirement[]>());
@@ -66,25 +67,7 @@ export const RelaticsTabWidget = () => {
 
   return (
     <div>
-      <div className="relatics-settings__container">
-        <h3>Relatics instellingen</h3>
-        <div>
-          <input placeholder="Workspace GUID" />
-        </div>
-        <div>
-          <input placeholder="Toegangscode" />
-        </div>
-        <div>
-          <input placeholder="Relatics object code" />
-        </div>
-
-        <div className="button-area">
-          <button type="submit">Opslaan</button>
-          <button>
-            <RefreshIcon fill="white" />
-          </button>
-        </div>
-      </div>
+      <RelaticsConfigForm />
 
       <div className="category-filter">
         <span>Filter type eisen: </span>
