@@ -4,11 +4,30 @@ import { RelaticsConfig } from "./interfaces/RelaticsConfig";
 import { Requirement } from "./interfaces/Requirement";
 
 export class Citr {
+    static getRelaticsConfigKey(): string {
+        const {iModelId, contextId} = UiFramework.getIModelConnection()!
 
-    public static relaticsConfig: RelaticsConfig = {
-        workspaceId: '1149f258-fbc3-4c6f-97ef-78f224eed877',
-        entryCode: 'Welkom123',
-        objectId: '427400c4-cfc1-4675-beec-bac5b55e0564'
+        return `Relatics-${contextId}-${iModelId}`
+    }
+
+    public static getRelaticsConfig(): RelaticsConfig {
+        const configStorageKey = this.getRelaticsConfigKey()
+
+        const localStorageConfig = window.localStorage.getItem(configStorageKey)
+        if (!localStorageConfig) {
+            console.warn('no relatics config in localStorage')
+        }
+
+        const configObject = JSON.parse(localStorageConfig!)
+
+        return configObject as RelaticsConfig
+    }
+
+    public static setRelaticsConfig(config: RelaticsConfig) {
+        const configStorageKey = this.getRelaticsConfigKey()
+        const json = JSON.stringify(config)
+
+        window.localStorage.setItem(configStorageKey, json)
     }
 
     public static async getLayerFromSelectionSet(set: SelectionSet) {
@@ -79,13 +98,15 @@ export class Citr {
     }
 
     static async getRelaticsEisenByNLCSobject(nlcsObjectId: string) {
+        const config = this.getRelaticsConfig()
+
         const xml = this.getXmlString(
             'GetRelaticsEisenByNLCSobject',
-            this.relaticsConfig.workspaceId,
+            config.workspaceId,
             [
                 {'NCLSObject': nlcsObjectId}
             ],
-            this.relaticsConfig.entryCode
+            config.entryCode
         )
     
         const response = await fetch("https://sweco.relaticsonline.com/DataExchange.asmx?wsdl", {

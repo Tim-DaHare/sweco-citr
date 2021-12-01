@@ -9,6 +9,17 @@
 .relatics-settings__container {
   padding: 8px;
   color: white;
+
+  .success-message {
+    color: lime;
+    font-weight: 800;
+  }
+
+  .error-message {
+    color: red;
+    font-weight: 700;
+  }
+
   > div {
     margin-bottom: 10px;
     
@@ -39,7 +50,7 @@
       border-radius: 5px;
     }
 
-    :first-child {
+    button:first-child {
       flex: 1;
       margin-right: 5px;
     }
@@ -77,10 +88,20 @@
   text-align: left;
   border-collapse: collapse;
   color: white;
+
+  th {
+    white-space: nowrap;
+  }
+
   td, th {
     border: 1px solid black;
     padding: 4px;
   }
+
+  tr:nth-child(even) {
+    background-color: var(--buic-background-5);
+  }
+
   .layer-indicator {
     font-weight: 800;
     font-style: italic;

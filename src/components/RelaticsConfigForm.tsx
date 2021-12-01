@@ -1,36 +1,65 @@
-import React from 'react'
+import React, { FormEvent, useCallback, useEffect, useState } from 'react'
 import { RefreshIcon } from './icons'
 import { RelaticsConfig } from '../interfaces/RelaticsConfig'
 import { Citr } from '../Citr'
 
-interface RelaticsConfigFormProps {
-    config?: RelaticsConfig
-}
+export const RelaticsConfigForm: React.FC = () => {
+    const [config, setConfig] = useState<RelaticsConfig | null>(null)
+    const [successMessage, setSuccessMessage] = useState<string | null>(null)
+    const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-export const RelaticsConfigForm: React.FC<RelaticsConfigFormProps> = ({
-    config
-}) => {
 
-    config = Citr.relaticsConfig
+    useEffect(() => {
+        setConfig(Citr.getRelaticsConfig())
+    }, [])
+
+    const onFormSubmit = useCallback((ev: FormEvent) => {
+        ev.preventDefault()
+
+        const formData = new FormData(ev.target as HTMLFormElement)
+
+        const newConfigObject: RelaticsConfig = {
+            workspaceId: formData.get('workspaceId')!.toString(),
+            objectId: formData.get('objectId')!.toString(),
+            entryCode: formData.get('entryCode')!.toString(),
+        }
+
+        try {
+            Citr.setRelaticsConfig(newConfigObject)
+            
+            setSuccessMessage('Instellingen opgelagen')
+            setErrorMessage(null)
+
+            setTimeout(() => {
+                setSuccessMessage(null)
+            }, 3000)
+        } catch (e) {
+            setErrorMessage("Instellingen konden niet worden opgeslagen")
+        }
+    }, [])
+
     return (
-        <form className="relatics-settings__container">
+        <form className="relatics-settings__container" onSubmit={onFormSubmit}>
             <h3>Relatics instellingen</h3>
             <div>
-                <input placeholder="Workspace GUID" defaultValue={config?.workspaceId} />
+                <input required name="workspaceId" placeholder="Workspace GUID" defaultValue={config?.workspaceId} />
             </div>
             <div>
-                <input placeholder="Toegangscode" defaultValue={config?.entryCode} />
+                <input required name="entryCode" placeholder="Toegangscode" defaultValue={config?.entryCode} />
             </div>
             <div>
-                <input placeholder="Relatics object code" defaultValue={config?.objectId} />
+                <input required name="objectId" placeholder="Relatics object code" defaultValue={config?.objectId} />
             </div>
 
             <div className="button-area">
-            <button type="submit">Opslaan</button>
-            <button title="Eisenset verversen">
-                <RefreshIcon fill="white" />
-            </button>
+                <button type="submit">Opslaan</button>
+                <button title="Eisenset verversen">
+                    <RefreshIcon fill="white" />
+                </button>
             </div>
+            <p className="success-message">{successMessage}</p>
+            <p className="error-message">{errorMessage}</p>
+
         </form>
     )
 }

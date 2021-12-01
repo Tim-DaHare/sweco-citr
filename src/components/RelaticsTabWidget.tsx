@@ -1,13 +1,9 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { IModelApp, SelectionSetEvent } from '@bentley/imodeljs-frontend';
-// import { 
-  // getRelaticsEisenByNLCSobject, 
-  // getRelaticsEisenByRelaticsobject 
-// } from "../api-helper";
 import { Requirement } from "../interfaces/Requirement";
 import { Citr } from "../Citr";
-import { RefreshIcon } from "./icons";
 import { RelaticsConfigForm } from "./RelaticsConfigForm";
+import { UiFramework } from "@bentley/ui-framework";
 
 export const RelaticsTabWidget = () => {
   const [requirements, setRequirements] = React.useState<Map<string, Requirement[]>>(new Map<string, Requirement[]>());
@@ -37,17 +33,20 @@ export const RelaticsTabWidget = () => {
     setselectedTypes(currTypes)
   }, [selectedTypes])
 
-  React.useEffect(() => {
-    const vp = IModelApp.viewManager.getFirstOpenView()
 
-    vp!.iModel.selectionSet.onChanged.addListener(onSelectCallback);
+
+  useEffect(() => {
+    const vp = IModelApp.viewManager.getFirstOpenView()!
+
+    vp.iModel.selectionSet.onChanged.addListener(onSelectCallback);
 
     (async () => {
       try {
         const reqs = await Citr.getRelaticsEisenByNLCSobject("427400c4-cfc1-4675-beec-bac5b55e0564")
+        // console.log(reqs)
+
         // const reqs = await getRelaticsEisenByRelaticsobject('Obj-00001')
 
-        // console.log(reqs)
         setRequirements(reqs)
       } catch(e) {
         alert("Relatics eisen konden niet worden opgehaald");
