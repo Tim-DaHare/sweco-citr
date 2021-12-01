@@ -6,6 +6,15 @@
   height: calc(100vh - 50px);
 }
 
+@keyframes spin {
+  from {
+    transform: rotateZ(0deg);
+  }
+  to {
+    transform: rotateZ(360deg);
+  }
+}
+
 .relatics-settings__container {
   padding: 8px;
   color: white;

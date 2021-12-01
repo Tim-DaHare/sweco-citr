@@ -3,14 +3,26 @@ import { RefreshIcon } from './icons'
 import { RelaticsConfig } from '../interfaces/RelaticsConfig'
 import { Citr } from '../Citr'
 
-export const RelaticsConfigForm: React.FC = () => {
+interface RelaticsConfigFormProps {
+    onPressRefresh?: () => void
+}
+
+export const RelaticsConfigForm: React.FC<RelaticsConfigFormProps> = ({ 
+    onPressRefresh = () => {} 
+}) => {
     const [config, setConfig] = useState<RelaticsConfig | null>(null)
     const [successMessage, setSuccessMessage] = useState<string | null>(null)
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
-
+    const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
 
     useEffect(() => {
         setConfig(Citr.getRelaticsConfig())
+    }, [])
+
+    const onPressRefreshButton = useCallback(async () => {
+        setIsRefreshing(true)
+        await onPressRefresh()
+        setIsRefreshing(false)
     }, [])
 
     const onFormSubmit = useCallback((ev: FormEvent) => {
@@ -45,7 +57,7 @@ export const RelaticsConfigForm: React.FC = () => {
                 <input required name="workspaceId" placeholder="Workspace GUID" defaultValue={config?.workspaceId} />
             </div>
             <div>
-                <input required name="entryCode" placeholder="Toegangscode" defaultValue={config?.entryCode} />
+                <input type="password" required name="entryCode" placeholder="Toegangscode" defaultValue={config?.entryCode} />
             </div>
             <div>
                 <input required name="objectId" placeholder="Relatics object code" defaultValue={config?.objectId} />
@@ -53,13 +65,18 @@ export const RelaticsConfigForm: React.FC = () => {
 
             <div className="button-area">
                 <button type="submit">Opslaan</button>
-                <button title="Eisenset verversen">
-                    <RefreshIcon fill="white" />
+                <button type="button" title="Eisenset verversen" onClick={onPressRefreshButton}>
+                    <RefreshIcon
+                        style={
+                            isRefreshing ? { animation: 'spin linear infinite 3s' } 
+                            : {}
+                        } 
+                        fill="white" 
+                    />
                 </button>
             </div>
             <p className="success-message">{successMessage}</p>
             <p className="error-message">{errorMessage}</p>
-
         </form>
     )
 }
