@@ -55,7 +55,9 @@ export const RelaticsTabWidget = () => {
   }, [onSelectCallback])
 
   const filteredReqs = [...requirements].filter(([layerName, reqs]) => {
-    if (selectedCategories.length !== 0 && !selectedCategories.includes(layerName)) return false
+    const layerIsInSelectedCategories = selectedCategories.some((l) => layerName.substr(0, 7) === l.substr(0, 7))
+    
+    if (selectedCategories.length !== 0 && !layerIsInSelectedCategories) return false
 
     const filteredReqs = reqs.filter((req) => selectedTypes.includes(req.type))
 
