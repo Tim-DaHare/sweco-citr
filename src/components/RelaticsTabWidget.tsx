@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from "react";
 import { IModelApp, SelectionSetEvent } from '@bentley/imodeljs-frontend';
-import { 
-  getRelaticsEisenByNLCSobject, 
+// import { 
+  // getRelaticsEisenByNLCSobject, 
   // getRelaticsEisenByRelaticsobject 
-} from "../api-helper";
+// } from "../api-helper";
 import { Requirement } from "../interfaces/Requirement";
 import { Citr } from "../Citr";
 import { RefreshIcon } from "./icons";
@@ -44,7 +44,7 @@ export const RelaticsTabWidget = () => {
 
     (async () => {
       try {
-        const reqs = await getRelaticsEisenByNLCSobject("427400c4-cfc1-4675-beec-bac5b55e0564")
+        const reqs = await Citr.getRelaticsEisenByNLCSobject("427400c4-cfc1-4675-beec-bac5b55e0564")
         // const reqs = await getRelaticsEisenByRelaticsobject('Obj-00001')
 
         // console.log(reqs)
