@@ -13,7 +13,7 @@ export const RelaticsTabWidget = () => {
     'Contracteis_product', 
     'Systeemeis'
   ])
-  const [emphasizedLayer, setEmphasizedLayer] = useState<string | null>(null)
+  const [emphasizedLayers, setEmphasizedLayers] = useState<string[]>([])
 
   const onSelectCallback = useCallback(async (ev: SelectionSetEvent) => {
     const categories = await Citr.getLayerFromSelectionSet(ev.set)
@@ -54,44 +54,68 @@ export const RelaticsTabWidget = () => {
     refreshRequirements()
   }, [onSelectCallback])
 
+  const toggleLayerEhphasis = useCallback(async (layerName: string) => {
+    const newEmphasizedLayers = [...emphasizedLayers]
 
-  const onPressEmphasizeLayer = useCallback(async (layerName: string) => {
+    const layerIndex = newEmphasizedLayers.indexOf(layerName)
+    if (layerIndex === -1) {
+      newEmphasizedLayers.push(layerName)
+    } else {
+      newEmphasizedLayers.splice(layerIndex, 1)
+    }
+
+    setEmphasizedLayers(newEmphasizedLayers)
+
     const vp = IModelApp.viewManager.getFirstOpenView()!
     const emph = EmphasizeElements.getOrCreate(vp)
 
-    const elemIds = await Citr.getElementIdsByCategoryName(layerName)
+    if (newEmphasizedLayers.length === 0) {
+      emph.clearEmphasizedElements(vp)
+      return
+    }
+
+    const elemIds = await Citr.getElementIdsByCategoryNames(newEmphasizedLayers)
 
     emph.emphasizeElements(elemIds, vp)
-    setEmphasizedLayer(layerName)
-  }, [])
+  }, [emphasizedLayers])
 
-  const clearEmphasis = useCallback(() => {
-    const vp = IModelApp.viewManager.getFirstOpenView()!
-    const emph = EmphasizeElements.getOrCreate(vp)
+  // const onPressEmphasizeLayer = useCallback(async (layerName: string) => {
+  //   const vp = IModelApp.viewManager.getFirstOpenView()!
+  //   const emph = EmphasizeElements.getOrCreate(vp)
 
-    emph.clearEmphasizedElements(vp)
-    setEmphasizedLayer(null)
-  }, [])
+  //   const elemIds = await Citr.getElementIdsByCategoryName(layerName)
 
-  const onEmphasisChange = useCallback(async (ev: ChangeEvent, layerName: string) => {
-    const checked = (ev.target as HTMLInputElement).checked
+  //   emph.emphasizeElements(elemIds, vp)
+  //   setEmphasizedLayers(layerName)
+  // }, [])
 
-    if (checked) {
-      const vp = IModelApp.viewManager.getFirstOpenView()!
-      const emph = EmphasizeElements.getOrCreate(vp)
+  // const clearEmphasis = useCallback(() => {
+  //   const vp = IModelApp.viewManager.getFirstOpenView()!
+  //   const emph = EmphasizeElements.getOrCreate(vp)
 
-      const elemIds = await Citr.getElementIdsByCategoryName(layerName)
+  //   emph.clearEmphasizedElements(vp)
+  //   setEmphasizedLayer(null)
+  // }, [])
 
-      emph.emphasizeElements(elemIds, vp)
-      setEmphasizedLayer(layerName)
-    } else {
-      const vp = IModelApp.viewManager.getFirstOpenView()!
-      const emph = EmphasizeElements.getOrCreate(vp)
+  // const onEmphasisChange = useCallback(async (ev: ChangeEvent, layerName: string) => {
+  //   const checked = (ev.target as HTMLInputElement).checked
 
-      emph.clearEmphasizedElements(vp)
-      setEmphasizedLayer(null)
-    }
-  }, [])
+  //   if (checked) {
+  //     const vp = IModelApp.viewManager.getFirstOpenView()!
+  //     const emph = EmphasizeElements.getOrCreate(vp)
+
+  //     const elemIds = await Citr.getElementIdsByCategoryName(layerName)
+
+  //     emph.emphasizeElements(elemIds, vp)
+  //     setEmphasizedLayer(layerName)
+  //   } else {
+  //     const vp = IModelApp.viewManager.getFirstOpenView()!
+  //     const emph = EmphasizeElements.getOrCreate(vp)
+
+  //     emph.clearEmphasizedElements(vp)
+  //     setEmphasizedLayer(null)
+  //   }
+  // }, [])
 
   const filteredReqs = [...requirements].filter(([layerName, reqs]) => {
     const layerIsInSelectedCategories = selectedCategories.some((l) => layerName.substr(0, 7) === l.substr(0, 7))
@@ -142,7 +166,15 @@ export const RelaticsTabWidget = () => {
                     <td colSpan={5}>
                       <div className="layer-indicator">
                         <span>{layername}</span>
-                        <span>Highlight <input type="checkbox" name="emphasize" onChange={(e) => onEmphasisChange(e, layername)} checked={emphasizedLayer === layername} /></span>
+                        <span>
+                          Highlight 
+                          <input 
+                            type="checkbox" 
+                            name={`emphasize-${layername}`}
+                            onChange={() => toggleLayerEhphasis(layername)} 
+                            checked={emphasizedLayers.includes(layername)} 
+                          />
+                        </span>
                       </div>
                     </td>
                   </tr>
