@@ -2,6 +2,24 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+
+* {
+  box-sizing: border-box;
+}
+
+input, button {
+  border: none;
+  outline: none;
+}
+
+button {
+  background-color: #0061FF;
+  color: white;
+  font-weight: 800;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
 .viewer-container {
   height: calc(100vh - 50px);
 }
@@ -79,11 +97,9 @@
     height: 50px;
 
     button {
-      background-color: #0061FF;
       color: white;
       cursor: pointer;
       font-weight: 800;
-      border-radius: 5px;
     }
 
     button:first-child {
@@ -141,5 +157,11 @@
   .layer-indicator {
     font-weight: 800;
     font-style: italic;
+
+    // width: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
   }
 }

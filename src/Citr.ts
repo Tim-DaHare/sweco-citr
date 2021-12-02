@@ -56,6 +56,24 @@ export class Citr {
         return categories
     }
 
+    public static async getElementIdsByCategoryName(categoryName: string) {
+        const conn = UiFramework.getIModelConnection()!
+
+        const result = await conn.query(`
+            SELECT ge.ECInstanceId FROM BisCore.GeometricElement3d ge 
+            JOIN BisCore.GeometricElement3dIsInCategory ge_cat ON ge.ECInstanceId = ge_cat.SourceECInstanceId 
+            JOIN BisCore.SpatialCategory cat ON cat.ECInstanceId = ge_cat.TargetECInstanceId 
+            WHERE cat.CodeValue = '${categoryName}'
+        `)
+
+        const elemIds: string[] = []
+        for await (const row of result) {
+            elemIds.push(row.id)
+        }
+
+        return elemIds
+    }
+
     static getXmlString(
         operationName: string,
         workspaceId: string,

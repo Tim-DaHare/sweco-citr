@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { IModelApp, SelectionSetEvent } from '@bentley/imodeljs-frontend';
+import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { EmphasizeElements, IModelApp, SelectionSetEvent } from '@bentley/imodeljs-frontend';
 import { Requirement } from "../interfaces/Requirement";
 import { Citr } from "../Citr";
 import { RelaticsConfigForm } from "./RelaticsConfigForm";
+import { UiFramework } from "@bentley/ui-framework";
 
 export const RelaticsTabWidget = () => {
   const [requirements, setRequirements] = React.useState<Map<string, Requirement[]>>(new Map<string, Requirement[]>());
@@ -12,6 +13,7 @@ export const RelaticsTabWidget = () => {
     'Contracteis_product', 
     'Systeemeis'
   ])
+  const [emphasizedLayer, setEmphasizedLayer] = useState<string | null>(null)
 
   const onSelectCallback = useCallback(async (ev: SelectionSetEvent) => {
     const categories = await Citr.getLayerFromSelectionSet(ev.set)
@@ -51,6 +53,45 @@ export const RelaticsTabWidget = () => {
 
     refreshRequirements()
   }, [onSelectCallback])
+
+
+  const onPressEmphasizeLayer = useCallback(async (layerName: string) => {
+    const vp = IModelApp.viewManager.getFirstOpenView()!
+    const emph = EmphasizeElements.getOrCreate(vp)
+
+    const elemIds = await Citr.getElementIdsByCategoryName(layerName)
+
+    emph.emphasizeElements(elemIds, vp)
+    setEmphasizedLayer(layerName)
+  }, [])
+
+  const clearEmphasis = useCallback(() => {
+    const vp = IModelApp.viewManager.getFirstOpenView()!
+    const emph = EmphasizeElements.getOrCreate(vp)
+
+    emph.clearEmphasizedElements(vp)
+    setEmphasizedLayer(null)
+  }, [])
+
+  const onEmphasisChange = useCallback(async (ev: ChangeEvent, layerName: string) => {
+    const checked = (ev.target as HTMLInputElement).checked
+
+    if (checked) {
+      const vp = IModelApp.viewManager.getFirstOpenView()!
+      const emph = EmphasizeElements.getOrCreate(vp)
+
+      const elemIds = await Citr.getElementIdsByCategoryName(layerName)
+
+      emph.emphasizeElements(elemIds, vp)
+      setEmphasizedLayer(layerName)
+    } else {
+      const vp = IModelApp.viewManager.getFirstOpenView()!
+      const emph = EmphasizeElements.getOrCreate(vp)
+
+      emph.clearEmphasizedElements(vp)
+      setEmphasizedLayer(null)
+    }
+  }, [])
 
   const filteredReqs = [...requirements].filter(([layerName, reqs]) => {
     const layerIsInSelectedCategories = selectedCategories.some((l) => layerName.substr(0, 7) === l.substr(0, 7))
@@ -98,7 +139,12 @@ export const RelaticsTabWidget = () => {
               return (
                 <React.Fragment key={`${layername}`}>
                   <tr>
-                    <td className="layer-indicator" colSpan={5}>{layername}</td>
+                    <td colSpan={5}>
+                      <div className="layer-indicator">
+                        <span>{layername}</span>
+                        <span>Highlight <input type="checkbox" name="emphasize" onChange={(e) => onEmphasisChange(e, layername)} checked={emphasizedLayer === layername} /></span>
+                      </div>
+                    </td>
                   </tr>
                   {reqs.map((req, i) => {
                     // FIXME: Find a real key value for the table row
