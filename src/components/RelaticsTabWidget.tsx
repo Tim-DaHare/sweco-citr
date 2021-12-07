@@ -2,7 +2,6 @@ import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { EmphasizeElements, IModelApp, SelectionSetEvent } from '@bentley/imodeljs-frontend';
 import { Requirement } from "../interfaces/Requirement";
 import { Citr } from "../Citr";
-import { RelaticsConfigForm } from "./RelaticsConfigForm";
 import { UiFramework } from "@bentley/ui-framework";
 
 export const RelaticsTabWidget = () => {
@@ -129,7 +128,6 @@ export const RelaticsTabWidget = () => {
 
   return (
     <div>
-      <RelaticsConfigForm onPressRefresh={refreshRequirements} />
 
       <div className="category-filter">
         <span>Filter type eisen: </span>

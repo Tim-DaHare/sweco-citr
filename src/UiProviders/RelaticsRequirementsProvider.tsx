@@ -6,6 +6,7 @@ import {
     UiItemsProvider,
 } from '@bentley/ui-abstract';
 import { RelaticsTabWidget } from '../components/RelaticsTabWidget';
+import { RelaticsConfTabWidget } from '../components/RelaticsConfigTabWidget';
 
 export class RelaticsRequirementsUiProvider implements UiItemsProvider {
     public readonly id = "RelaticsRequirementsProviderId";
@@ -32,7 +33,17 @@ export class RelaticsRequirementsUiProvider implements UiItemsProvider {
                 },
             };
 
-            widgets.push(relaticsWidget);
+            const relaticsConfWidget: AbstractWidgetProps = {
+                id: 'relaticsConfWidget',
+                label: 'Config',
+                getWidgetContent() {
+                    return (
+                        <RelaticsConfTabWidget /> 
+                    )
+                },
+            };
+
+            widgets.push(relaticsWidget,relaticsConfWidget);
         }
 
         return widgets;
