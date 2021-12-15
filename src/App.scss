@@ -10,15 +10,27 @@
 /* Light mode */
 @media (prefers-color-scheme: light) {
   .relatics-settings__container, .category-filter, .sweco-requirements-table {
-      color: black;
+    color: black;
   }
 }
 
 /* Dark mode */
 @media (prefers-color-scheme: dark) {
   .relatics-settings__container, .category-filter, .sweco-requirements-table {
-      color: white;
+    color: white;
   }
+}
+
+select {
+    padding: 8px;
+    width: 100%;
+    border: none;
+    outline: none;
+
+    option {
+        padding: 8px;
+        width: 100%;
+    }
 }
 
 input, button {
@@ -131,23 +143,40 @@ button {
   }
 }
 
-.category-filter {
-  padding: 8px;
-  //color: white;
-  background-color: inherit;
-  // position: sticky;
-  // top: 0;
+.table-header {
+  position: sticky;
+  top: 0;
   display: flex;
   flex-flow: row nowrap;
+  justify-content: space-between;
+  width: 100%;
+  background-color: var(--buic-background-tooltip);
 
-  > span {
-    margin-right: 30px;
+  .category-filter {
+    display: flex;
+    flex-flow: row nowrap;
+    flex: 4;
+    padding: 8px;
+  
+    > span {
+      margin-right: 30px;
+    }
+  
+    > div {
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      margin-right: 20px;
+    }
   }
 
-  > div {
-    margin-right: 30px;
+  button {
+    flex: 1;
+    height: 36px;
+    background-color: red;
   }
 }
+
 
 .sweco-requirements-table {
   width: 100%;

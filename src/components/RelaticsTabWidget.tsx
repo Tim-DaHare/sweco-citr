@@ -36,7 +36,6 @@ export const RelaticsTabWidget = () => {
   const refreshRequirements = useCallback(async () => {
     try {
       const reqs = await Citr.getRelaticsEisenByNLCSobject("427400c4-cfc1-4675-beec-bac5b55e0564")
-      // console.log(reqs)
 
       // const reqs = await getRelaticsEisenByRelaticsobject('Obj-00001')
 
@@ -53,6 +52,15 @@ export const RelaticsTabWidget = () => {
     refreshRequirements()
   }, [onSelectCallback])
 
+  const disableEhphasize = useCallback(() => {
+    const vp = IModelApp.viewManager.getFirstOpenView()!
+    const emph = EmphasizeElements.getOrCreate(vp)
+
+    emph.clearEmphasizedElements(vp)
+
+    setEmphasizedLayers([])
+  }, [])
+
   const toggleLayerEhphasis = useCallback(async (layerName: string) => {
     const newEmphasizedLayers = [...emphasizedLayers]
 
@@ -65,56 +73,18 @@ export const RelaticsTabWidget = () => {
 
     setEmphasizedLayers(newEmphasizedLayers)
 
-    const vp = IModelApp.viewManager.getFirstOpenView()!
-    const emph = EmphasizeElements.getOrCreate(vp)
-
     if (newEmphasizedLayers.length === 0) {
-      emph.clearEmphasizedElements(vp)
+      disableEhphasize()
       return
     }
 
     const elemIds = await Citr.getElementIdsByCategoryNames(newEmphasizedLayers)
 
+    const vp = IModelApp.viewManager.getFirstOpenView()!
+    const emph = EmphasizeElements.getOrCreate(vp)
+
     emph.emphasizeElements(elemIds, vp)
   }, [emphasizedLayers])
-
-  // const onPressEmphasizeLayer = useCallback(async (layerName: string) => {
-  //   const vp = IModelApp.viewManager.getFirstOpenView()!
-  //   const emph = EmphasizeElements.getOrCreate(vp)
-
-  //   const elemIds = await Citr.getElementIdsByCategoryName(layerName)
-
-  //   emph.emphasizeElements(elemIds, vp)
-  //   setEmphasizedLayers(layerName)
-  // }, [])
-
-  // const clearEmphasis = useCallback(() => {
-  //   const vp = IModelApp.viewManager.getFirstOpenView()!
-  //   const emph = EmphasizeElements.getOrCreate(vp)
-
-  //   emph.clearEmphasizedElements(vp)
-  //   setEmphasizedLayer(null)
-  // }, [])
-
-  // const onEmphasisChange = useCallback(async (ev: ChangeEvent, layerName: string) => {
-  //   const checked = (ev.target as HTMLInputElement).checked
-
-  //   if (checked) {
-  //     const vp = IModelApp.viewManager.getFirstOpenView()!
-  //     const emph = EmphasizeElements.getOrCreate(vp)
-
-  //     const elemIds = await Citr.getElementIdsByCategoryName(layerName)
-
-  //     emph.emphasizeElements(elemIds, vp)
-  //     setEmphasizedLayer(layerName)
-  //   } else {
-  //     const vp = IModelApp.viewManager.getFirstOpenView()!
-  //     const emph = EmphasizeElements.getOrCreate(vp)
-
-  //     emph.clearEmphasizedElements(vp)
-  //     setEmphasizedLayer(null)
-  //   }
-  // }, [])
 
   const filteredReqs = [...requirements].filter(([layerName, reqs]) => {
     const layerIsInSelectedCategories = selectedCategories.some((l) => layerName.substr(0, 7) === l.substr(0, 7))
@@ -129,20 +99,26 @@ export const RelaticsTabWidget = () => {
   return (
     <div>
 
-      <div className="category-filter">
-        <span>Filter type eisen: </span>
-        <div>
-          <input id="Klanteis" type="checkbox" name="type" value="Klanteis" defaultChecked onChange={onReqfilterChange} />
-          <label htmlFor="Klanteis">Klanteis</label>
+      <div className="table-header">
+        <div className="category-filter">
+          <span>Filter type eisen: </span>
+          <div>
+            <label htmlFor="Klanteis">Klanteis</label>
+            <input id="Klanteis" type="checkbox" name="type" value="Klanteis" defaultChecked onChange={onReqfilterChange} />
+          </div>
+          <div>
+            <label htmlFor="Contracteis_product">Contracteis</label>
+            <input id="Contracteis_product" type="checkbox" name="type" value="Contracteis_product" defaultChecked onChange={onReqfilterChange}  />
+          </div>
+          <div>
+            <label htmlFor="Systeemeis">Systeemeis</label>
+            <input id="Systeemeis" type="checkbox" name="type" value="Systeemeis" defaultChecked onChange={onReqfilterChange} />
+          </div>
         </div>
-        <div>
-          <input id="Contracteis_product" type="checkbox" name="type" value="Contracteis_product" defaultChecked onChange={onReqfilterChange}  />
-          <label htmlFor="Contracteis_product">Contracteis</label>
-        </div>
-        <div>
-          <input id="Systeemeis" type="checkbox" name="type" value="Systeemeis" defaultChecked onChange={onReqfilterChange} />
-          <label htmlFor="Systeemeis">Systeemeis</label>
-        </div>
+
+        {emphasizedLayers.length > 0 && (
+          <button type="button" onClick={disableEhphasize}>Highlights Uit</button>
+        )}
       </div>
 
       <table className="sweco-requirements-table">

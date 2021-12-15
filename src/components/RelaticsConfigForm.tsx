@@ -2,28 +2,35 @@ import React, { FormEvent, useCallback, useEffect, useState } from 'react'
 import { RefreshIcon } from './icons'
 import { RelaticsConfig } from '../interfaces/RelaticsConfig'
 import { Citr } from '../Citr'
+import { TileOptions } from '@bentley/imodeljs-common'
+
+
 
 interface RelaticsConfigFormProps {
     onPressRefresh?: () => void
 }
-
 export const RelaticsConfigForm: React.FC<RelaticsConfigFormProps> = ({ 
     onPressRefresh = () => {} 
 }) => {
     const [config, setConfig] = useState<RelaticsConfig | null>(null)
     const [successMessage, setSuccessMessage] = useState<string | null>(null)
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
-    const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
+    // const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
+    const [selectOptions, setSelectOptions] = useState<RelaticsConfig[]>([])
 
     useEffect(() => {
-        setConfig(Citr.getRelaticsConfig())
+        // setConfig(Citr.getRelaticsConfig())
+        (async () => {
+            const options = await Citr.getRelaticConfigOptions()
+            setSelectOptions(options)
+        })()
     }, [])
 
-    const onPressRefreshButton = useCallback(async () => {
-        setIsRefreshing(true)
-        await onPressRefresh()
-        setIsRefreshing(false)
-    }, [])
+    // const onPressRefreshButton = useCallback(async () => {
+    //     setIsRefreshing(true)
+    //     await onPressRefresh()
+    //     setIsRefreshing(false)
+    // }, [])
 
     const onFormSubmit = useCallback((ev: FormEvent) => {
         ev.preventDefault()
@@ -57,6 +64,15 @@ export const RelaticsConfigForm: React.FC<RelaticsConfigFormProps> = ({
                 <a title="Open relatics omgeving" href="https://sweco.relaticsonline.com/" target="_blank"><img src="/RelaticsActive.png"></img></a>
             </div>
             <div>
+                <select name="relaticsProject">
+                    {selectOptions.map(() => {
+                        return (
+                            <option>Saaf</option>
+                        )
+                    })}
+                </select>
+            </div>
+            {/* <div>
                 <input required name="workspaceId" placeholder="Workspace GUID" defaultValue={config?.workspaceId} />
             </div>
             <div>
@@ -77,7 +93,7 @@ export const RelaticsConfigForm: React.FC<RelaticsConfigFormProps> = ({
                         fill="white" 
                     />
                 </button>
-            </div>
+            </div> */}
             <p className="success-message">{successMessage}</p>
             <p className="error-message">{errorMessage}</p>
         </form>

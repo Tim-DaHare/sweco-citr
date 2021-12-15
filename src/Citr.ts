@@ -10,6 +10,18 @@ export class Citr {
         return `Relatics-${contextId}-${iModelId}`
     }
 
+    public static async getRelaticConfigOptions(): Promise<RelaticsConfig[]> {
+        // const response = await fetch('/relatics-config-option.json')
+        // const json = await response.json()
+
+        // const options: RelaticsConfig[] = [...json.options]
+
+        // console.log(options)
+
+        // return options
+        return []
+    }
+
     public static getRelaticsConfig(): RelaticsConfig {
         const configStorageKey = this.getRelaticsConfigKey()
 
@@ -34,10 +46,10 @@ export class Citr {
         if (set.elements.size === 0) {
             return []
         }
-        const conn = UiFramework.getIModelConnection()
+        const conn = UiFramework.getIModelConnection()!
 
         const elemIds = [...set.elements.values()]
-        const elemResult = conn!.query(`SELECT * FROM BisCore.GeometricElement3d WHERE ECInstanceId IN (${elemIds})`)
+        const elemResult = conn.query(`SELECT * FROM BisCore.GeometricElement3d WHERE ECInstanceId IN (${elemIds})`)
 
         const categoryIds: string[] = []
         for await (const row of elemResult) {
@@ -48,10 +60,25 @@ export class Citr {
 
         const catResult = conn!.query(`select CodeValue from BisCore.SpatialCategory WHERE ECInstanceId IN (${categoryIds})`)
 
+        // console.log('elemIds', elemIds.map((elemId) => `'${elemId}'`).toString())
+
+        // const catResult = await conn.query(`
+        //     SELECT cat.CodeValue 
+        //     FROM BisCore.GeometricElement3d ge 
+        //     JOIN BisCore.GeometricElement3dIsInCategory ge_cat 
+        //         ON ge.ECInstanceId = ge_cat.SourceECInstanceId 
+        //     JOIN BisCore.SpatialCategory cat 
+        //         ON cat.ECInstanceId = ge_cat.TargetECInstanceId 
+        //     WHERE ge.ECInstanceId IN (${elemIds.map((elemId) => `'${elemId}'`)})
+        // `)
+
         const categories: string[] = []
         for await (const row of catResult) {
+            console.log(row)
             categories.push(row.codeValue)
         }
+
+        // console.log('cats', categories)
 
         return categories
     }
