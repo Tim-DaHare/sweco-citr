@@ -59,7 +59,7 @@ export class Citr {
 
         const categories: string[] = []
         for await (const row of catResult) {
-            console.log(row)
+            // console.log(row)
             categories.push(row.codeValue)
         }
 
