@@ -2,6 +2,7 @@ import { SelectionSet } from "@bentley/imodeljs-frontend";
 import { UiFramework } from "@bentley/ui-framework";
 import { RelaticsConfig } from "./interfaces/RelaticsConfig";
 import { Requirement } from "./interfaces/Requirement";
+import projectConfig from "./project-config";
 
 export class Citr {
     static getRelaticsConfigKey(): string {
@@ -156,8 +157,11 @@ export class Citr {
             ],
             config.entryCode
         )
+
+        console.log(process.env)
     
-        const response = await fetch("https://sweco.relaticsonline.com/DataExchange.asmx?wsdl", {
+        // const response = await fetch("https://sweco.relaticsonline.com/DataExchange.asmx?wsdl", {
+        const response = await fetch(`${projectConfig.MIDDLEWARE_BASE_URL}/GetRelaticsEisenByNLCSobject`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'text/xml',
