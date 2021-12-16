@@ -2,7 +2,8 @@ import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { EmphasizeElements, IModelApp, SelectionSetEvent } from '@bentley/imodeljs-frontend';
 import { Requirement } from "../interfaces/Requirement";
 import { Citr } from "../Citr";
-import { UiFramework } from "@bentley/ui-framework";
+import { RelaticsConfigForm } from "./RelaticsConfigForm";
+import { RelaticsConfig } from "../interfaces/RelaticsConfig";
 
 export const RelaticsTabWidget = () => {
   const [requirements, setRequirements] = React.useState<Map<string, Requirement[]>>(new Map<string, Requirement[]>());
@@ -13,6 +14,7 @@ export const RelaticsTabWidget = () => {
     'Systeemeis'
   ])
   const [emphasizedLayers, setEmphasizedLayers] = useState<string[]>([])
+  const [relaticsConfig, setRelaticsConfig] = useState<RelaticsConfig>();
 
   const onSelectCallback = useCallback(async (ev: SelectionSetEvent) => {
     const categories = await Citr.getLayerFromSelectionSet(ev.set)
@@ -33,23 +35,40 @@ export const RelaticsTabWidget = () => {
     setselectedTypes(currTypes)
   }, [selectedTypes])
 
-  const refreshRequirements = useCallback(async () => {
+  const onSelectConfig = useCallback(async (config: RelaticsConfig) => {
     try {
-      const reqs = await Citr.getRelaticsEisenByNLCSobject("427400c4-cfc1-4675-beec-bac5b55e0564")
-
-      // const reqs = await getRelaticsEisenByRelaticsobject('Obj-00001')
-
+      const reqs = await Citr.getRelaticsEisenByNLCSobject(config)
       setRequirements(reqs)
+
+      Citr.setStoredRelaticsConfigTitle(config.title)
+      setRelaticsConfig(config)
     } catch(e) {
       alert("Relatics eisen konden niet worden opgehaald");
     }
   }, [])
 
+  // Init effect
   useEffect(() => {
-    const vp = IModelApp.viewManager.getFirstOpenView()!
-    vp.iModel.selectionSet.onChanged.addListener(onSelectCallback);
+    (async () => {
+      const vp = IModelApp.viewManager.getFirstOpenView()!
+      vp.iModel.selectionSet.onChanged.addListener(onSelectCallback);
+      const options = await Citr.getRelaticConfigOptions()
+      const confTitle = Citr.getStoredRelaticsConfigTitle()
 
-    refreshRequirements()
+      if (!confTitle) {
+        return
+      }
+
+      const config = options.find((o) => o.title === confTitle) 
+      if (!config) {
+        return
+      }
+
+      setRelaticsConfig(config)
+  
+      const reqs = await Citr.getRelaticsEisenByNLCSobject(config)
+      setRequirements(reqs)
+    })()
   }, [onSelectCallback])
 
   const disableEhphasize = useCallback(() => {
@@ -98,6 +117,21 @@ export const RelaticsTabWidget = () => {
 
   return (
     <div>
+      <details className="relatics-details">
+        <summary>
+            instellingen
+            {relaticsConfig && (
+              <a
+                title="Open relatics omgeving" 
+                href={`https://sweco.relaticsonline.com/${relaticsConfig.workspaceId}`} 
+                target="_blank"
+              >
+                <img src="/RelaticsActive.png" />
+              </a>
+            )}
+        </summary>
+        <RelaticsConfigForm config={relaticsConfig} onSelect={(config: RelaticsConfig) => onSelectConfig(config)} />
+      </details>
 
       <div className="table-header">
         <div className="category-filter">
@@ -153,10 +187,8 @@ export const RelaticsTabWidget = () => {
                     </td>
                   </tr>
                   {reqs.map((req, i) => {
-                    // FIXME: Find a real key value for the table row
-
                     if (!selectedTypes.includes(req.type)) return React.Fragment
-
+                    // FIXME: Find a real key value for the table row
                     return (
                       <tr key={`${layername}-${req.title}-${req.object_id}-${i}`}>
                         <td>{req.type}</td>

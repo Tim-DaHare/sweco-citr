@@ -9,14 +9,20 @@
 
 /* Light mode */
 @media (prefers-color-scheme: light) {
-  .relatics-settings__container, .category-filter, .sweco-requirements-table {
+  .relatics-settings__container, 
+  .category-filter, 
+  .sweco-requirements-table,
+  .relatics-details {
     color: black;
   }
 }
 
 /* Dark mode */
 @media (prefers-color-scheme: dark) {
-  .relatics-settings__container, .category-filter, .sweco-requirements-table {
+  .relatics-settings__container, 
+  .category-filter, 
+  .sweco-requirements-table,
+  .relatics-details {
     color: white;
   }
 }
@@ -44,6 +50,7 @@ button {
   font-weight: 800;
   padding: 5px 10px;
   border-radius: 5px;
+  cursor: pointer;
 }
 
 .viewer-container {
@@ -59,9 +66,47 @@ button {
   }
 }
 
-.relatics-settings__container {
+
+summary::marker {
+  unicode-bidi: isolate;
+  font-variant-numeric: tabular-nums;
+  text-transform: none;
+  text-indent: 0px !important;
+  text-align: start !important;
+  text-align-last: start !important;
+}
+
+.relatics-details {
+  font-size: 18px;
   padding: 8px;
-  //color: white;
+  position: relative;
+
+  a {
+    height: 25px;
+    position: absolute;
+    right: 8px;
+
+    img {
+      height: 25px;
+    }
+  }
+}
+
+.relatics-details summary::marker {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+.relatics-settings__container {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+
+  p {
+    margin-right: 10px;
+  }
 
   .success-message {
     color: lime;
@@ -73,9 +118,8 @@ button {
     font-weight: 700;
   }
 
-  > div {
-    margin-bottom: 10px;
-    
+  div {
+    margin: 10px 0;
   }
 
   > button {
@@ -83,7 +127,6 @@ button {
   }
 
   a {
-    padding: 14px;
     color: white;
     text-decoration: none;
     outline: none;
@@ -100,7 +143,8 @@ button {
 
   .flex {
     display: flex;
-    column-gap: 60%;
+    flex-flow: row nowrap;
+    justify-content: space-between;
   }
 
   img{

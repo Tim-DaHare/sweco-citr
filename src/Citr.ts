@@ -5,42 +5,26 @@ import { Requirement } from "./interfaces/Requirement";
 import projectConfig from "./project-config";
 
 export class Citr {
-    static getRelaticsConfigKey(): string {
+    static getRelaticsConfigStorageKey(): string {
         const {iModelId, contextId} = UiFramework.getIModelConnection()!
-
         return `Relatics-${contextId}-${iModelId}`
     }
 
     public static async getRelaticConfigOptions(): Promise<RelaticsConfig[]> {
-        // const response = await fetch('/relatics-config-option.json')
-        // const json = await response.json()
+        const response = await fetch('/relatics-config-option.json')
+        const json = await response.json()
 
-        // const options: RelaticsConfig[] = [...json.options]
-
-        // console.log(options)
-
-        // return options
-        return []
+        return [...json.options]
     }
 
-    public static getRelaticsConfig(): RelaticsConfig {
-        const configStorageKey = this.getRelaticsConfigKey()
-
-        const localStorageConfig = window.localStorage.getItem(configStorageKey)
-        if (!localStorageConfig) {
-            console.warn('no relatics config in localStorage')
-        }
-
-        const configObject = JSON.parse(localStorageConfig!)
-
-        return configObject as RelaticsConfig
+    public static getStoredRelaticsConfigTitle(): string | null {
+        const storageKey = this.getRelaticsConfigStorageKey()
+        return window.localStorage.getItem(storageKey)
     }
 
-    public static setRelaticsConfig(config: RelaticsConfig) {
-        const configStorageKey = this.getRelaticsConfigKey()
-        const json = JSON.stringify(config)
-
-        window.localStorage.setItem(configStorageKey, json)
+    public static setStoredRelaticsConfigTitle(configKey: string): void {
+        const storageKey = this.getRelaticsConfigStorageKey()
+        window.localStorage.setItem(storageKey, configKey)
     }
 
     public static async getLayerFromSelectionSet(set: SelectionSet) {
@@ -78,8 +62,6 @@ export class Citr {
             console.log(row)
             categories.push(row.codeValue)
         }
-
-        // console.log('cats', categories)
 
         return categories
     }
@@ -146,21 +128,16 @@ export class Citr {
         return xml
     }
 
-    static async getRelaticsEisenByNLCSobject(nlcsObjectId: string) {
-        const config = this.getRelaticsConfig()
-
+    static async getRelaticsEisenByNLCSobject(config: RelaticsConfig): Promise<Map<string, Requirement[]>> {
         const xml = this.getXmlString(
             'GetRelaticsEisenByNLCSobject',
             config.workspaceId,
             [
-                {'NCLSObject': nlcsObjectId}
+                {'NCLSObject': config.objectId}
             ],
             config.entryCode
         )
 
-        console.log(process.env)
-    
-        // const response = await fetch("https://sweco.relaticsonline.com/DataExchange.asmx?wsdl", {
         const response = await fetch(`${projectConfig.MIDDLEWARE_BASE_URL}/GetRelaticsEisenByNLCSobject`, {
             method: 'POST',
             headers: {
