@@ -15,6 +15,8 @@ export const RelaticsTabWidget = () => {
   ])
   const [emphasizedLayers, setEmphasizedLayers] = useState<string[]>([])
   const [relaticsConfig, setRelaticsConfig] = useState<RelaticsConfig>();
+  const [titleSearch, setTitleSearch] = useState<string>('')
+  const [reqSearch, setReqSearch] = useState<string>('')
 
   const onSelectCallback = useCallback(async (ev: SelectionSetEvent) => {
     const categories = await Citr.getLayerFromSelectionSet(ev.set)
@@ -105,15 +107,25 @@ export const RelaticsTabWidget = () => {
     emph.emphasizeElements(elemIds, vp)
   }, [emphasizedLayers])
 
-  const filteredReqs = [...requirements].filter(([layerName, reqs]) => {
+  const filteredReqs = new Map<string, Requirement[]>()
+  for (let [layerName, reqs] of requirements) {
+
     const layerIsInSelectedCategories = selectedCategories.some((l) => layerName.substr(0, 7) === l.substr(0, 7))
     
-    if (selectedCategories.length !== 0 && !layerIsInSelectedCategories) return false
+    if (selectedCategories.length !== 0 && !layerIsInSelectedCategories) continue
 
-    const filteredReqs = reqs.filter((req) => selectedTypes.includes(req.type))
+    let filteredRequirements = reqs.filter((req) => selectedTypes.includes(req.type))
+    if (titleSearch) {
+      filteredRequirements = filteredRequirements.filter((req) => req.title?.includes(titleSearch))
+    }
+    if (reqSearch) {
+      filteredRequirements = filteredRequirements.filter((req) => req.description?.includes(reqSearch))
+    }
 
-    return !!filteredReqs.length
-  })
+    if (filteredRequirements.length === 0) continue
+
+    filteredReqs.set(layerName, filteredRequirements)
+  }
 
   return (
     <div>
@@ -157,17 +169,33 @@ export const RelaticsTabWidget = () => {
 
       <table className="sweco-requirements-table">
         <thead>
+              <tr className="search-bar">
+                  <th colSpan={2}>
+                    <input 
+                      type="text" 
+                      placeholder="Zoek op titel"
+                      onChange={(e) => setTitleSearch(e.target.value)}
+                    />
+                  </th>
+                  <th>
+                    <input 
+                      type="text" 
+                      placeholder="Zoek op eis"
+                      onChange={(e) => setReqSearch(e.target.value)}
+                    />
+                  </th>
+              </tr>
             <tr>
               <th>Type</th>
               <th>Titel</th>
               <th>Eis</th>
-              <th>Object ID</th>
-              <th>Status</th>
+              {/* <th>Object ID</th> */}
+              {/* <th>Status</th> */}
             </tr>
         </thead>
         <tbody>
-          {filteredReqs.length > 0 ? (
-            filteredReqs.map(([layername, reqs]) => {
+          {[...filteredReqs].length > 0 ? (
+            [...filteredReqs].map(([layername, reqs]) => {
               return (
                 <React.Fragment key={`${layername}`}>
                   <tr>
@@ -194,8 +222,8 @@ export const RelaticsTabWidget = () => {
                         <td>{req.type}</td>
                         <td>{req.title}</td>
                         <td>{req.description}</td>
-                        <td>{req.object_id}</td>
-                        <td>{req.status}</td>
+                        {/* <td>{req.object_id}</td> */}
+                        {/* <td>{req.status}</td> */}
                       </tr>
                     )
                   })}
