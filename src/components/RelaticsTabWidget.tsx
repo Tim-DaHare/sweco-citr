@@ -116,10 +116,10 @@ export const RelaticsTabWidget = () => {
 
     let filteredRequirements = reqs.filter((req) => selectedTypes.includes(req.type))
     if (titleSearch) {
-      filteredRequirements = filteredRequirements.filter((req) => req.title?.includes(titleSearch.trim()))
+      filteredRequirements = filteredRequirements.filter((req) => req.title?.toLowerCase().includes(titleSearch.toLowerCase().trim()))
     }
     if (reqSearch) {
-      filteredRequirements = filteredRequirements.filter((req) => req.description?.includes(reqSearch.trim()))
+      filteredRequirements = filteredRequirements.filter((req) => req.description?.toLowerCase().includes(reqSearch.toLowerCase().trim()))
     }
 
     if (filteredRequirements.length === 0) continue
